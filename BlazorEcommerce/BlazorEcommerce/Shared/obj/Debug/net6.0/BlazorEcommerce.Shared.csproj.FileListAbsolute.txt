@@ -1,0 +1,12 @@
+C:\Users\WimVanDerSchueren\source\repos\Udemy\Blazor\BlazorEcommerce\BlazorEcommerce\Shared\bin\Debug\net6.0\BlazorEcommerce.Shared.deps.json
+C:\Users\WimVanDerSchueren\source\repos\Udemy\Blazor\BlazorEcommerce\BlazorEcommerce\Shared\bin\Debug\net6.0\BlazorEcommerce.Shared.dll
+C:\Users\WimVanDerSchueren\source\repos\Udemy\Blazor\BlazorEcommerce\BlazorEcommerce\Shared\bin\Debug\net6.0\ref\BlazorEcommerce.Shared.dll
+C:\Users\WimVanDerSchueren\source\repos\Udemy\Blazor\BlazorEcommerce\BlazorEcommerce\Shared\bin\Debug\net6.0\BlazorEcommerce.Shared.pdb
+C:\Users\WimVanDerSchueren\source\repos\Udemy\Blazor\BlazorEcommerce\BlazorEcommerce\Shared\obj\Debug\net6.0\BlazorEcommerce.Shared.csproj.AssemblyReference.cache
+C:\Users\WimVanDerSchueren\source\repos\Udemy\Blazor\BlazorEcommerce\BlazorEcommerce\Shared\obj\Debug\net6.0\BlazorEcommerce.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\WimVanDerSchueren\source\repos\Udemy\Blazor\BlazorEcommerce\BlazorEcommerce\Shared\obj\Debug\net6.0\BlazorEcommerce.Shared.AssemblyInfoInputs.cache
+C:\Users\WimVanDerSchueren\source\repos\Udemy\Blazor\BlazorEcommerce\BlazorEcommerce\Shared\obj\Debug\net6.0\BlazorEcommerce.Shared.AssemblyInfo.cs
+C:\Users\WimVanDerSchueren\source\repos\Udemy\Blazor\BlazorEcommerce\BlazorEcommerce\Shared\obj\Debug\net6.0\BlazorEcommerce.Shared.csproj.CoreCompileInputs.cache
+C:\Users\WimVanDerSchueren\source\repos\Udemy\Blazor\BlazorEcommerce\BlazorEcommerce\Shared\obj\Debug\net6.0\BlazorEcommerce.Shared.dll
+C:\Users\WimVanDerSchueren\source\repos\Udemy\Blazor\BlazorEcommerce\BlazorEcommerce\Shared\obj\Debug\net6.0\ref\BlazorEcommerce.Shared.dll
+C:\Users\WimVanDerSchueren\source\repos\Udemy\Blazor\BlazorEcommerce\BlazorEcommerce\Shared\obj\Debug\net6.0\BlazorEcommerce.Shared.pdb
