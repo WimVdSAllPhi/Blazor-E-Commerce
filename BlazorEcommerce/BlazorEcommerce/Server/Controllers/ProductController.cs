@@ -35,7 +35,7 @@ namespace BlazorEcommerce.Server.Controllers
         };
 
         [HttpGet]
-        public async Task<IActionResult> GetAllProductsAsync()
+        public async Task<ActionResult<List<Product>>> GetAllProductsAsync()
         {
             return Ok(Products);
         }
