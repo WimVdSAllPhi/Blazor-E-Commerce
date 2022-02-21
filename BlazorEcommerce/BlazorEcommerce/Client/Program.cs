@@ -1,3 +1,5 @@
+global using System.Net.Http.Json;
+global using BlazorEcommerce.Client.Services.ProductService;
 global using BlazorEcommerce.Shared;
 
 using BlazorEcommerce.Client;
@@ -9,5 +11,8 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+// DI
+builder.Services.AddScoped<IProductService, ProductService>();
 
 await builder.Build().RunAsync();
