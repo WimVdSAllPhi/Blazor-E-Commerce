@@ -22,6 +22,20 @@
             return response;
         }
 
+        public async Task<ServiceResponse<List<Product>>> GetFeaturedProductsAsync()
+        {
+            var response = new ServiceResponse<List<Product>>();
+
+            var products = await _context.Products
+                .Where(x => x.Featured)
+                .Include(x => x.Variants)
+                .ToListAsync();
+
+            response.Data = products;
+
+            return response;
+        }
+
         public async Task<ServiceResponse<Product>> GetProductByIdAsync(int id)
         {
             var response = new ServiceResponse<Product>();
