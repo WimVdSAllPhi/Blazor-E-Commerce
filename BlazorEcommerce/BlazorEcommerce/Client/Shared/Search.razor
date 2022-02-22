@@ -38,7 +38,14 @@
 
     public void SearchProducts()
     {
-        NavigationManager.NavigateTo($"search/{searchText}");
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            NavigationManager.NavigateTo("");
+        }
+        else
+        {
+            NavigationManager.NavigateTo($"search/{searchText}");
+        }
     }
 
     public async Task HandleSearch(KeyboardEventArgs args)
