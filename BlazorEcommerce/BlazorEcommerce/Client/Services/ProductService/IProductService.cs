@@ -10,12 +10,17 @@
 
         string Message { get; set; }
 
+        int CurrentPage { get; set; }
+
+        int PageCount { get; set; }
+        string LastSearchText { get; set; }
+
         // Methods
         Task GetProductsAsync(string? categoryUrl = null);
 
         Task<ServiceResponse<Product>> GetProductByIdAsync(int id);
 
-        Task SearchProductsAsync(string searchText);
+        Task SearchProductsAsync(string searchText, int page);
 
         Task<List<string>> GetProductSearchSuggestionsAsync(string searchText);
     }
