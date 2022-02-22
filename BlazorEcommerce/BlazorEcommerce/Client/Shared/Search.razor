@@ -38,14 +38,15 @@
 
     public void SearchProducts()
     {
-        if (string.IsNullOrWhiteSpace(searchText))
-        {
-            NavigationManager.NavigateTo("");
-        }
-        else
-        {
-            NavigationManager.NavigateTo($"search/{searchText}/1");
-        }
+        NavigationManager.NavigateTo($"search/{searchText}/1");
+        //if (string.IsNullOrWhiteSpace(searchText))
+        //{
+        //    NavigationManager.NavigateTo("");
+        //}
+        //else
+        //{
+        //    NavigationManager.NavigateTo($"search/{searchText}/1");
+        //}
     }
 
     public async Task HandleSearch(KeyboardEventArgs args)
