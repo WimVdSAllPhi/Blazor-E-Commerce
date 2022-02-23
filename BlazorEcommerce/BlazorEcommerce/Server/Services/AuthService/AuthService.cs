@@ -124,5 +124,36 @@ namespace BlazorEcommerce.Server.Services.AuthService
 
             return jwt;
         }
+
+        public async Task<ServiceResponse<bool>> ChangePassword(int userId, string newPassword)
+        {
+            var user = await _context.Users.FindAsync(userId);
+
+            if (user == null)
+            {
+                var errorResponse = new ServiceResponse<bool>
+                {
+                    Success = false,
+                    Message = "User not found."
+                };
+
+                return errorResponse;
+            }
+
+            CreatePasswordHash(newPassword, out byte[] passwordHash, out byte[] passwordSalt);
+
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
+
+            await _context.SaveChangesAsync();
+
+            var respone = new ServiceResponse<bool>()
+            {
+                Data = true,
+                Message = "Password has been changed."
+            };
+
+            return respone;
+        }
     }
 }
