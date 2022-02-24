@@ -45,6 +45,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+// DI Http Context
+builder.Services.AddHttpContextAccessor();
+
 var app = builder.Build();
 
 // Swagger

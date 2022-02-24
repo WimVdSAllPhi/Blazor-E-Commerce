@@ -9,6 +9,7 @@
         public DbSet<ProductType> ProductTypes { get; set; }
         public DbSet<ProductVariant> ProductVariants { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
 
         // Constructor
         public DataContext(DbContextOptions options) : base(options)
@@ -18,6 +19,8 @@
         // Seeding
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<CartItem>().HasKey(x => new { x.UserId, x.ProductId, x.ProductTypeId }); // Composite PK
+
             modelBuilder.Entity<ProductVariant>().HasKey(x => new { x.ProductId, x.ProductTypeId }); // Composite PK
 
             modelBuilder.Entity<ProductType>().HasData(
