@@ -10,6 +10,8 @@
         public DbSet<ProductVariant> ProductVariants { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
 
         // Constructor
         public DataContext(DbContextOptions options) : base(options)
@@ -22,6 +24,8 @@
             modelBuilder.Entity<CartItem>().HasKey(x => new { x.UserId, x.ProductId, x.ProductTypeId }); // Composite PK
 
             modelBuilder.Entity<ProductVariant>().HasKey(x => new { x.ProductId, x.ProductTypeId }); // Composite PK
+
+            modelBuilder.Entity<OrderItem>().HasKey(x => new { x.OrderId, x.ProductId, x.ProductTypeId }); // Composite PK
 
             modelBuilder.Entity<ProductType>().HasData(
                 new ProductType { Id = 1, Name = "Default" },

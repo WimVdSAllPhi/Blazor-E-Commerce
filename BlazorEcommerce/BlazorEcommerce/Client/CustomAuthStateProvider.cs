@@ -1,9 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text.Json;
-using BlazorEcommerce.Shared.Helpers;
 using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Components.Authorization;
 
 namespace BlazorEcommerce.Client
 {

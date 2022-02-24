@@ -1,4 +1,4 @@
-﻿namespace BlazorEcommerce.Shared.Helpers
+﻿namespace BlazorEcommerce.Shared
 {
     public static class StringExtensions
     {
