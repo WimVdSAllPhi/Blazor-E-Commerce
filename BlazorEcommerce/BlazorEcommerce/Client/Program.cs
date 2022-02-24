@@ -1,4 +1,5 @@
 global using System.Net.Http.Json;
+global using BlazorEcommerce.Client.Services.AddressService;
 global using BlazorEcommerce.Client.Services.AuthService;
 global using BlazorEcommerce.Client.Services.CartService;
 global using BlazorEcommerce.Client.Services.CategoryService;
@@ -27,6 +28,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IAddressService, AddressService>();
 
 // Authroriztaion
 builder.Services.AddOptions();
