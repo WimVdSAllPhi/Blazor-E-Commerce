@@ -90,11 +90,9 @@
             return response;
         }
 
-        public async Task<ServiceResponse<bool>> PlaceOrder()
+        public async Task<ServiceResponse<bool>> PlaceOrder(int userId)
         {
-            var userId = _authService.GetUserId();
-
-            var productsServiceResponse = await _cartService.GetDbCartProducts();
+            var productsServiceResponse = await _cartService.GetDbCartProducts(userId);
 
             var products = productsServiceResponse.Data;
 

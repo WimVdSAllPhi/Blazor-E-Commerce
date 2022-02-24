@@ -57,11 +57,11 @@ else
         }
         else if (variants.Count == 1)
         {
-            return $"${variants[0].Price}";
+            return $"€{variants[0].Price}";
         }
 
         var minPrice = variants.Min(x => x.Price);
 
-        return $"Starting at ${minPrice}";
+        return $"Starting at €{minPrice}";
     }
 }

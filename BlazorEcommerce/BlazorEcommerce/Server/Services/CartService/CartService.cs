@@ -98,9 +98,13 @@
             return result;
         }
 
-        public async Task<ServiceResponse<List<CartProductResponse>>> GetDbCartProducts()
+        public async Task<ServiceResponse<List<CartProductResponse>>> GetDbCartProducts(int? userId = null)
         {
-            var userId = _authService.GetUserId();
+            if (userId == null)
+            {
+                userId = _authService.GetUserId();
+            }
+
             var list = await _context.CartItems.Where(x => x.UserId == userId).ToListAsync();
             var response = await GetCartProductsAsync(list);
 
