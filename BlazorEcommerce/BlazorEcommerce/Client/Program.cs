@@ -5,9 +5,9 @@ global using BlazorEcommerce.Client.Services.CartService;
 global using BlazorEcommerce.Client.Services.CategoryService;
 global using BlazorEcommerce.Client.Services.OrderService;
 global using BlazorEcommerce.Client.Services.ProductService;
+global using BlazorEcommerce.Client.Services.ProductTypeService;
 global using BlazorEcommerce.Shared;
 global using Microsoft.AspNetCore.Components.Authorization;
-
 using BlazorEcommerce.Client;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Web;
@@ -29,6 +29,7 @@ builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IAddressService, AddressService>();
+builder.Services.AddScoped<IProductTypeService, ProductTypeService>();
 
 // Authroriztaion
 builder.Services.AddOptions();
