@@ -11,18 +11,18 @@
 
         public async Task<Address> AddOrUpdateAddress(Address address)
         {
-            var response = await _http.PostAsJsonAsync("api/address", address);
+            var result = await _http.PostAsJsonAsync("api/address", address);
 
-            var result = response.Content.ReadFromJsonAsync<ServiceResponse<Address>>().Result;
+            var content = result.Content.ReadFromJsonAsync<ServiceResponse<Address>>().Result;
 
-            return result.Data;
+            return content.Data;
         }
 
         public async Task<Address> GetAddress()
         {
-            var resposne = await _http.GetFromJsonAsync<ServiceResponse<Address>>("api/address");
+            var result = await _http.GetFromJsonAsync<ServiceResponse<Address>>("api/address");
 
-            return resposne.Data;
+            return result.Data;
         }
     }
 }

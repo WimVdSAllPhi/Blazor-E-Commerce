@@ -71,13 +71,11 @@ namespace BlazorEcommerce.Client.Services.CartService
                 }
                 else
                 {
-                    var response = await _http.PostAsJsonAsync("api/cart/products", cartItems);
+                    var result = await _http.PostAsJsonAsync("api/cart/products", cartItems);
 
-                    var cartProducts = await response.Content.ReadFromJsonAsync<ServiceResponse<List<CartProductResponse>>>();
+                    var content = await result.Content.ReadFromJsonAsync<ServiceResponse<List<CartProductResponse>>>();
 
-                    var result = cartProducts.Data;
-
-                    return result;
+                    return content.Data;
                 }
             }
         }

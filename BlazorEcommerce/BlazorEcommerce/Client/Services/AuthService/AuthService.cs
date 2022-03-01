@@ -14,7 +14,9 @@
         public async Task<bool> IsUserAuthenticated()
         {
             var state = await _authStateProvider.GetAuthenticationStateAsync();
+
             var isAuthenticated = state.User.Identity.IsAuthenticated;
+
             return isAuthenticated;
         }
 
@@ -22,27 +24,27 @@
         {
             var result = await _http.PostAsJsonAsync("api/auth/change-password", request.Password);
 
-            var response = await result.Content.ReadFromJsonAsync<ServiceResponse<bool>>();
+            var content = await result.Content.ReadFromJsonAsync<ServiceResponse<bool>>();
 
-            return response;
+            return content;
         }
 
         public async Task<ServiceResponse<string>> Login(UserLogin request)
         {
             var result = await _http.PostAsJsonAsync("api/auth/login", request);
 
-            var response = await result.Content.ReadFromJsonAsync<ServiceResponse<string>>();
+            var content = await result.Content.ReadFromJsonAsync<ServiceResponse<string>>();
 
-            return response;
+            return content;
         }
 
         public async Task<ServiceResponse<int>> Register(UserRegister request)
         {
             var result = await _http.PostAsJsonAsync("api/auth/register", request);
 
-            var response = await result.Content.ReadFromJsonAsync<ServiceResponse<int>>();
+            var content = await result.Content.ReadFromJsonAsync<ServiceResponse<int>>();
 
-            return response;
+            return content;
         }
     }
 }

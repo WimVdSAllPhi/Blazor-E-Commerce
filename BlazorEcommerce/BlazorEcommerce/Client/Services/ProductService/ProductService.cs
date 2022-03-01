@@ -11,6 +11,7 @@
         public int CurrentPage { get; set; } = 1;
         public int PageCount { get; set; } = 0;
         public string LastSearchText { get; set; } = string.Empty;
+        public List<Product> AdminProducts { get; set; } = new List<Product>();
 
         public ProductService(HttpClient http)
         {
@@ -71,5 +72,47 @@
 
             return result.Data;
         }
+
+        #region Admin
+
+        public async Task GetAdminProducts()
+        {
+            var result = await _http.GetFromJsonAsync<ServiceResponse<List<Product>>>("api/Product/admin");
+
+            AdminProducts = result.Data;
+
+            CurrentPage = 1;
+            PageCount = 0;
+
+            if (AdminProducts.Count == 0)
+            {
+                Message = "No products found.";
+            }
+        }
+
+        public async Task<Product> CreateProduct(Product product)
+        {
+            var result = await _http.PostAsJsonAsync("api/product", product);
+
+            var content = await result.Content.ReadFromJsonAsync<ServiceResponse<Product>>();
+
+            return content.Data;
+        }
+
+        public async Task<Product> UpdateProduct(Product product)
+        {
+            var result = await _http.PutAsJsonAsync("api/product", product);
+
+            var content = await result.Content.ReadFromJsonAsync<ServiceResponse<Product>>();
+
+            return content.Data;
+        }
+
+        public async Task DeleteProduct(Product product)
+        {
+            var result = await _http.DeleteAsync($"api/product/{product.Id}");
+        }
+
+        #endregion Admin
     }
 }
