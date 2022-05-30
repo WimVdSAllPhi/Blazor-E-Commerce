@@ -2,12 +2,12 @@
 {
     public class CategoryService : ICategoryService
     {
-        private readonly HttpClient _http;
-
         public event Action OnChange;
 
         public List<Category> Categories { get; set; } = new List<Category>();
-        public List<Category> AdminCategories { get; set; } = new List<Category>();
+        public List<Category> AdminCategories { get; set; }
+
+        private readonly HttpClient _http;
 
         public CategoryService(HttpClient http)
         {

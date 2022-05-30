@@ -1,0 +1,40 @@
+﻿@inject BrowserService Browser
+
+@if (bigWindowSize)
+{
+    @ChildContentBig
+}
+else
+{
+    @ChildContentSmall
+}
+
+@code {
+    private static Boolean bigWindowSize = true;
+
+    [Parameter, EditorRequired]
+    public RenderFragment ChildContentBig { get; set; }
+
+    [Parameter, EditorRequired]
+    public RenderFragment ChildContentSmall { get; set; }
+
+    protected override async void OnInitialized()
+    {
+        // subscribe to browser width change
+        Browser.Resize += UpdatedBrowserWidth;
+    }
+
+    protected void UpdatedBrowserWidth(object sender, int width)
+    {
+        if (!bigWindowSize && width >= 641)
+        {
+            bigWindowSize = true;
+            base.StateHasChanged();
+        }
+        else if (bigWindowSize && width < 641)
+        {
+            bigWindowSize = false;
+            base.StateHasChanged();
+        }
+    }
+}

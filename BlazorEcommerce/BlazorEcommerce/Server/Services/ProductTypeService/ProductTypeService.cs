@@ -54,5 +54,36 @@
 
             return response;
         }
+
+        public async Task<ServiceResponse<List<ProductType>>> DeleteProductType(int id)
+        {
+            var productType = await GetProductTypeById(id);
+
+            if (productType == null)
+            {
+                var errorResponse = new ServiceResponse<List<ProductType>>()
+                {
+                    Success = false,
+                    Message = "Product Type not found."
+                };
+
+                return errorResponse;
+            }
+
+            _context.ProductTypes.Remove(productType);
+
+            await _context.SaveChangesAsync();
+
+            var productTypes = await GetProductTypes();
+
+            return productTypes;
+        }
+
+        private async Task<ProductType> GetProductTypeById(int id)
+        {
+            var productType = await _context.ProductTypes.FirstOrDefaultAsync(c => c.Id == id);
+
+            return productType;
+        }
     }
 }

@@ -9,10 +9,14 @@ namespace BlazorEcommerce.Server.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IMailService _mailService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService, IMailService mailService, IHttpContextAccessor httpContextAccessor)
         {
             _authService = authService;
+            _mailService = mailService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpPost("register")]
@@ -20,7 +24,11 @@ namespace BlazorEcommerce.Server.Controllers
         {
             var user = new User
             {
-                Email = request.Email
+                Email = request.Email,
+                LastName = request.LastName,
+                FirstName = request.FirstName,
+                ImageUrl = request.ImageUrl,
+                PhoneNumber = request.PhoneNumber,
             };
 
             var response = await _authService.Register(user, request.Password);
@@ -28,6 +36,24 @@ namespace BlazorEcommerce.Server.Controllers
             if (!response.Success)
             {
                 return BadRequest(response);
+            }
+
+            var basePath = _httpContextAccessor.HttpContext.Request.Scheme + "://" + _httpContextAccessor.HttpContext.Request.Host.Value;
+
+            var sendMail = await _mailService.GetBaseMail(new SendMail() { ToEmail = request.Email, Subject = "Registration", HTMLBody = $"Thank you to registrat to <a href=\"{basePath}\">K&A Dreamdeals</a>" }, "Registration", $"Welkom {user.FirstName} {user.LastName}");
+
+            var mailResponse = await _mailService.SendEmailAsync(sendMail);
+
+            if (!mailResponse.Success)
+            {
+                var removeResponse = await _authService.RemoveUser(user);
+
+                if (removeResponse.Success)
+                {
+                    return BadRequest(new ServiceResponse<int>() { Success = false, Message = "The email given is not real!" });
+                }
+
+                return BadRequest(removeResponse);
             }
 
             return Ok(response);
@@ -59,6 +85,26 @@ namespace BlazorEcommerce.Server.Controllers
             }
 
             return Ok(response);
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<ServiceResponse<UserProfile>>> GetProfileAsync(int id)
+        {
+            var response = await _authService.GetFullUserByIdAsync(id);
+
+            if (!response.Success)
+            {
+                return BadRequest(response);
+            }
+
+            return Ok(response);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<ServiceResponse<UserProfile>>> UpdateProductAsync(UserProfile user)
+        {
+            var result = await _authService.UpdateUserAsync(user);
+            return Ok(result);
         }
     }
 }

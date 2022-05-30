@@ -1,0 +1,36 @@
+﻿@inject IJSRuntime JSRuntime
+@implements IAsyncDisposable
+
+<h2 class="curved-text @TextrColorClass" @ref="curvingElement">@Text</h2>
+
+@code {
+    [Parameter]
+    public string? Text { get; set; } = "K&A Dreamdeals";
+
+    [Parameter]
+    public string TextrColorClass { get; set; } = "text-white";
+
+    IJSObjectReference? _module;
+    IJSObjectReference? _curvingInstance;
+    ElementReference curvingElement;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./curvedText.js");
+        _curvingInstance = await _module.InvokeAsync<IJSObjectReference>("updateCurvedText", curvingElement);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_curvingInstance != null)
+        {
+            await _curvingInstance.InvokeVoidAsync("dispose");
+            await _curvingInstance.DisposeAsync();
+        }
+
+        if (_module != null)
+        {
+            await _module.DisposeAsync();
+        }
+    }
+}

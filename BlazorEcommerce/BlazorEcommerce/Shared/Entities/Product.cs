@@ -11,7 +11,6 @@ namespace BlazorEcommerce.Shared
         public string Title { get; set; } = string.Empty;
 
         public string Description { get; set; } = string.Empty;
-        public string ImageUrl { get; set; } = string.Empty;
 
         public bool Featured { get; set; } = false;
 
@@ -30,6 +29,7 @@ namespace BlazorEcommerce.Shared
 
         public int CategoryId { get; set; }
 
+        public List<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
         public List<ProductVariant> Variants { get; set; } = new List<ProductVariant>();
     }
 }

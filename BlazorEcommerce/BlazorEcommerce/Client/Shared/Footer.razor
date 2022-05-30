@@ -1,0 +1,129 @@
+﻿@inject IAuthService AuthService
+@inject ICategoryService CategoryService
+@implements IDisposable
+
+<!-- Footer -->
+<footer class="bg-dark text-center text-white" id="@id">
+    <!-- Grid container -->
+    <div class="container p-4">
+        <!-- Section: Social media -->
+        <section class="mb-4">
+            <!-- Facebook -->
+            <a class="btn btn-outline-light btn-floating m-1" href="https://www.facebook.com/DreamsdealsbyK.A" role="button" target="_blank">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+
+            @*<!-- Twitter -->
+                <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button" target="_blank">
+                <i class="fab fa-twitter"></i>
+                </a>
+
+                <!-- Google -->
+                <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button" target="_blank">
+                <i class="fab fa-google"></i>
+                </a>
+
+                <!-- Instagram -->
+                <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button" target="_blank">
+                <i class="fab fa-instagram"></i>
+                </a>
+
+                <!-- Linkedin -->
+                <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button" target="_blank">
+                <i class="fab fa-linkedin-in"></i>
+                </a>
+
+                <!-- Github -->
+                <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button" target="_blank">
+                <i class="fab fa-github"></i>
+                </a>*@
+        </section>
+        <!-- Section: Social media -->
+        <!-- Section: Text -->
+        <section class="mb-4">
+            <p>
+                Hallo & welkom bij K&A Dreamdeals. Wij bieden een ruim assortiment van frisdranken aan voor een zeer betaalbare prijs zoals Coca Cola, Fanta, Sprite, enz. (24x33cl) Alsook Disney artikelen met officieel label(geen namaak) & parfums van bekende merken.
+            </p>
+        </section>
+        <!-- Section: Text -->
+        <!-- Section: Links -->
+        <section class="">
+            <!--Grid row-->
+            <div class="row">
+                <!--Grid column-->
+                <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">Categories</h5>
+
+                    <ul class="list-unstyled mb-0">
+                        @foreach (var category in CategoryService.Categories)
+                        {
+                            <li>
+                                <a href="@category.Url" class="text-white">@category.Name</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <!--Grid column-->
+                <!--Grid column-->
+                <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">Account & Info</h5>
+
+                    <ul class="list-unstyled mb-0">
+                        @if (isAuthenticated)
+                        {
+                            <li>
+                                <a href="profile" class="text-white">Your account</a>
+                            </li>
+                        }
+                        <li>
+                            <a href="faq" class="text-white">FAQ</a>
+                        </li>
+                    </ul>
+                </div>
+                <!--Grid column-->
+                <!--Grid column-->
+                <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">About us</h5>
+
+                    <ul class="list-unstyled mb-0">
+                        <li>
+                            <a href="about-us" class="text-white">About company</a>
+                        </li>
+                        <li>
+                            <a href="contact-us" class="text-white">Contacteer ons</a>
+                        </li>
+                    </ul>
+                </div>
+                <!--Grid column-->
+            </div>
+            <!--Grid row-->
+        </section>
+        <!-- Section: Links -->
+    </div>
+    <!-- Grid container -->
+    <!-- Copyright -->
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+        © 2022 Copyright:
+        <a class="text-white" href="https://www.linkedin.com/in/wimvds/" target="_blank">WimVdS</a>
+    </div>
+    <!-- Copyright -->
+</footer>
+<!-- Footer -->
+@code {
+    bool isAuthenticated = false;
+
+    [Parameter, EditorRequired]
+    public string id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        isAuthenticated = await AuthService.IsUserAuthenticated();
+        await CategoryService.GetCategories();
+        CategoryService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        CategoryService.OnChange -= StateHasChanged;
+    }
+}

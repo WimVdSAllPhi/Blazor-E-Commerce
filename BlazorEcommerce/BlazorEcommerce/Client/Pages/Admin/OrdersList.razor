@@ -1,0 +1,164 @@
+﻿@page "/admin/orders"
+
+<PageTitle>K & A Dreamdeals - Orders</PageTitle>
+
+<h3>Orders</h3>
+
+@if (_orderService.AdminOrders == null)
+{
+    <Loading Style="min-height:calc(100vh - 40rem);" />
+}
+else if (_orderService.AdminOrders.Count <= 0)
+{
+    <span>There are no orders, yet.</span>
+}
+else
+{
+    <div class="accordion mb-4" id="accordionOrder">
+        @foreach (var order in _orderService.AdminOrders)
+        {
+            <div class="accordion-item @(order.IsDone ? "container-valid" : "container-error") hoverAccordion">
+                <h2 class="accordion-header" id="heading_@order.Id">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_@order.Id" aria-expanded="false" aria-controls="collapse_@order.Id">
+                        <div class="w-100 row row-cols-1 row-cols-sm-2 row-cols-md-6 accordion-header">
+                            <div class="col">
+                                <h5>@order.User.FirstName @order.User.LastName</h5>
+                            </div>
+                            <div class="col">
+                                <span>@order.User.Email</span>
+                            </div>
+                            <div class="col">
+                                <span>Besteld op: @order.OrderDate</span>
+                            </div>
+                            <div class="col">
+                                <span>Bestel type: @order.OrderType</span>
+                            </div>
+                            <div class="col">
+                                @if (order.OrderType.Equals(OrderType.Levering))
+                                {
+                                    <span>@order.User.Address.Street @order.User.Address.StreetNr</span>
+
+                                    <br />
+                                    <span>@order.User.Address.City, @order.User.Address.Country @order.User.Address.Zip</span>
+
+                                    <br />
+                                }
+                            </div>
+                        </div>
+                    </button>
+                </h2>
+
+                <button @onclick="@(_ => _printingService.PrintAsync($"printOrder_{order.Id}", "css/bootstrap/bootstrap.min.css", PrintType.Html))" @onclick:stopPropagation="true" class="btn btn-info printBtn">
+                    <i class="oi oi-print"></i>
+                </button>
+
+                <div id="collapse_@order.Id" class="accordion-collapse collapse" aria-labelledby="heading_@order.Id" data-bs-parent="#accordionOrder">
+                    <div class="accordion-body">
+                        @foreach (var item in order.OrderItems)
+                        {
+                            <div class="row row-cols-1 row-cols-sm-2">
+                                <div class="col text-center">
+                                    @if (item.Product.ProductImages != null && item.Product.ProductImages.Count > 0)
+                                    {
+                                        <img src="@item.Product.ProductImages[0].ImageUrl" class="image" alt="@item.Product.Title">
+                                    }
+                                    else
+                                    {
+                                        <img src="Images/noImage.jpg" class="image" alt="@item.Product.Title">
+                                    }
+                                </div>
+                                <div class="col">
+                                    <h2 class="mb-0">@item.Product.Title</h2>
+                                    <p>@item.Product.Description</p>
+                                    <p>Quantity: @item.Quantity</p>
+                                </div>
+                            </div>
+                        }
+                        <div class="text-end">
+                            <div class="order-price d-inline">€@order.TotalPrice</div>
+
+                            @if (!order.IsDone)
+                            {
+                                <button class="btn btn-success d-inline ms-2" type="button" @onclick="(() => PutAsDone(order.Id))">Behandeld</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-none">
+                <div id="printOrder_@order.Id">
+                    <div class="row">
+                        <div class="col">
+                            <h4>Besteling van:</h4>
+                            <p>
+                                <span>@order.User.FirstName @order.User.LastName</span>
+
+                                <br />
+                                <span>@MapPhoneNumber(order.User.PhoneNumber)</span>
+                            </p>
+                        </div>
+                        <div class="col text-end">
+                            <h4>Bestel type: @order.OrderType</h4>
+
+                            <h5>Address:</h5>
+
+                            <p>
+                                <span>@order.User.Address.Street @order.User.Address.StreetNr</span>
+
+                                <br />
+                                <span>@order.User.Address.City, @order.User.Address.Country @order.User.Address.Zip</span>
+                            </p>
+                        </div>
+                    </div>
+                    <hr />
+
+                    <table class="table table-sm">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>
+                                    Checkbox
+                                </th>
+                                <th>
+                                    Image
+                                </th>
+                                <th>
+                                    Title
+                                </th>
+                                <th>
+                                    Quantity
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var orderItem in order.OrderItems)
+                            {
+                                <tr>
+                                    <td>
+                                        <input class="form-check-input" type="checkbox" id="check_@(orderItem.OrderId)_@orderItem.ProductId" />
+                                    </td>
+                                    <td>
+                                        @if (orderItem.Product.ProductImages != null && orderItem.Product.ProductImages.Count > 0)
+                                        {
+                                            <img src="@orderItem.Product.ProductImages[0].ImageUrl" width="50" height="50" alt="@orderItem.Product.Title">
+                                        }
+                                        else
+                                        {
+                                            <img src="Images/noImage.jpg" width="50" height="50" alt="@orderItem.Product.Title">
+                                        }
+                                    </td>
+                                    <td>
+                                        <strong>@orderItem.Product.Title</strong>
+                                    </td>
+                                    <td>
+                                        <span>@orderItem.Quantity</span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+}

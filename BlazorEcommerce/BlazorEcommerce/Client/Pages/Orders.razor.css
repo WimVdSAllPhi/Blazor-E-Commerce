@@ -7,6 +7,16 @@
     margin-bottom: 10px;
 }
 
+.container-error {
+    border: 1px solid;
+    border-color: red;
+}
+
+.container-valid {
+    border: 1px solid;
+    border-color: green;
+}
+
 .image-wrapper {
     width: 150px;
     text-align: center;

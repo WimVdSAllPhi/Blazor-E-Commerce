@@ -2,18 +2,19 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
 @inject ICartService CartService
+@using System.Security.Claims
 
 <div class="dropdown">
     <button @onclick="ToggleUserMenu"
             @onfocusout="HideUserMenu"
             class="btn btn-secondary dropdown-toggle user-button">
-        <i class="oi oi-person"></i>
+        <i class="oi oi-person"></i> <span>@UserName</span>
     </button>
     <div class="dropdown-menu dropdown-menu-right @UserMenuCssClass">
         <AuthorizeView>
             <Authorized>
-                <a href="profile" class="dropdown-item">Profile</a>
-                <a href="orders" class="dropdown-item">Orders</a>
+                <a href="profile" class="dropdown-item">Mijn Profile</a>
+                <a href="orders" class="dropdown-item">Mijn Bestelingen</a>
                 <hr />
                 <AdminMenu />
                 <button class="dropdown-item" @onclick="Logout">Logout</button>
@@ -31,6 +32,13 @@
 
     private string UserMenuCssClass => showUserMenu ? "show-menu" : null;
 
+    private string UserName = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        UserName = await GetUserNameAsync();
+    }
+
     private void ToggleUserMenu()
     {
         showUserMenu = !showUserMenu;
@@ -47,6 +55,33 @@
         await LocalStorage.RemoveItemAsync("authToken");
         await CartService.GetCartItemsCount();
         await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        NavigationManager.NavigateTo("");
+        NavigationManager.NavigateTo("", true);
+    }
+
+    public async Task<string> GetUserNameAsync()
+    {
+        var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        if (state != null)
+        {
+            var user = state.User;
+
+            if (user != null)
+            {
+                var claims = user.Claims;
+
+                if (claims != null && claims.Count() > 0)
+                {
+                    var claim = claims.FirstOrDefault(c => c.Type == ClaimTypes.GivenName);
+
+                    if (claim != null)
+                    {
+                        return claim.Value;
+                    }
+                }
+            }
+        }
+
+        return string.Empty;
     }
 }

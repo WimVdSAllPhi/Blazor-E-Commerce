@@ -1,0 +1,44 @@
+﻿@if (_productService != null && _productService.FeaturedProducts == null)
+{
+    <Loading Style="min-height:250px;" />
+}
+else if (_productService != null && _productService.FeaturedProducts.Count == 0)
+{
+    <span>@_productService.Message</span>
+}
+else if (_productService != null)
+{
+    <div class="container">
+        @foreach (var product in _productService.FeaturedProducts)
+        {
+            @if (product.Featured)
+            {
+                <div class="featured-product">
+                    <div>
+                        <a href="product/@product.Id">
+                            @if (product.ProductImages != null && product.ProductImages.Count > 0)
+                            {
+                                <img src="@product.ProductImages[0].ImageUrl" alt="@product.Title">
+                            }
+                            else
+                            {
+                                <img src="Images/noImage.jpg" alt="@product.Title">
+                            }
+                        </a>
+                    </div>
+                    <h4><a href="product/@product.Id">@product.Title</a></h4>
+                    @if (product.Variants != null && product.Variants.Count > 0)
+                    {
+                        <h5 class="price">
+                            €@product.Variants[0].Price
+                        </h5>
+                    }
+                </div>
+            }
+        }
+    </div>
+}
+else
+{
+    <Alert Type="danger" Message="Problem with the Inject function!!!" />
+}

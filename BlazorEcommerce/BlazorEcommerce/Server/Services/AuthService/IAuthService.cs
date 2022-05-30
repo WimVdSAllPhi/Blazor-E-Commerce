@@ -15,5 +15,11 @@
         string GetUserEmail();
 
         Task<User> GetUserByEmail(string email);
+
+        Task<ServiceResponse<UserProfile>> GetFullUserByIdAsync(int id);
+
+        Task<ServiceResponse<UserProfile>> UpdateUserAsync(UserProfile user);
+
+        Task<ServiceResponse<int>> RemoveUser(User user);
     }
 }

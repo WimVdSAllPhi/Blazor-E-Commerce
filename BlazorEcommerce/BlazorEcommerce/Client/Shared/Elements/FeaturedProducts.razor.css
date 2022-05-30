@@ -1,0 +1,68 @@
+﻿.container {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    justify-content: center;
+    padding-top: 1rem;
+    height: 18.5rem;
+}
+
+.featured-product {
+    margin: 0.75rem;
+    text-align: center;
+    padding: 0.5rem;
+    transition: all 0.2s ease;
+    max-width: 305px;
+    min-width: 305px;
+    height: 14rem;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: 0.25rem;
+}
+
+    .featured-product:hover {
+        box-shadow: 5px 6px 6px 2px #e9ecef;
+        transform: scale(1.1);
+    }
+
+    .featured-product img {
+        align-self: center;
+        max-height: 15rem;
+        width: auto;
+        height: auto;
+        max-width: 100%;
+    }
+
+@media (max-width: 1023.98px) {
+    .container {
+        justify-content: flex-start;
+    }
+}
+
+/*.card {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+    .card:hover {
+        box-shadow: 5px 6px 6px 2px #e9ecef;
+        transform: scale(1.1);
+    }
+
+.card-image {
+    align-self: center;
+    max-height: 15rem;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+}
+
+.card-body {
+    flex: 1 1 auto;
+    padding: 1rem 1rem;
+    z-index: 1;
+}
+*/

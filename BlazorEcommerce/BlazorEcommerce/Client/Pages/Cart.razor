@@ -1,26 +1,28 @@
 ﻿@page "/cart"
 
-@inject ICartService CartService
-@inject IOrderService OrderService
-@inject IAuthService AuthService
-@inject NavigationManager NavigationManager
-
-<PageTitle>Shopping Cart</PageTitle>
+<PageTitle>K & A Dreamdeals - Shopping Cart</PageTitle>
 
 <h3>Shopping Cart</h3>
 
-@if (cartProducts == null || cartProducts.Count == 0)
+@if (_cartProducts == null || _cartProducts.Count == 0)
 {
-    <span>@message</span>
+    <span>@_message</span>
 }
 else
 {
     <div>
-        @foreach (var product in cartProducts)
+        @foreach (var product in _cartProducts)
         {
             <div class="container">
                 <div class="image-wrapper">
-                    <img src="@product.ImageUrl" class="image" />
+                    @if (product.ProductImages != null && product.ProductImages.Count > 0)
+                    {
+                        <img src="@product.ProductImages[0].ImageUrl" class="image" alt="@product.Title">
+                    }
+                    else
+                    {
+                        <img src="Images/noImage.jpg" class="image" alt="@product.Title">
+                    }
                 </div>
                 <div class="name">
                     <h5><a href="/product/@product.ProductId">@product.Title</a></h5>
@@ -38,65 +40,43 @@ else
             </div>
         }
         <div class="cart-product-price">
-            Total (@cartProducts.Count): €@cartProducts.Sum(product => @product.Price * product.Quantity)
+            Total (@_cartProducts.Count): €@_cartProducts.Sum(product => @product.Price * product.Quantity)
         </div>
     </div>
 
-    @if (isAuthenticated)
+    @if (_isAuthenticated)
     {
+        <hr />
+
         <div>
             <h5>Delevery Address</h5>
-            <AddressForm />
+            <AddressForm OnAddressChange="AssignAddress" />
         </div>
     }
 
-    <button @onclick="PlaceOrder" class="btn alert-success float-end mt-1">Checkout</button>
-}
+    <hr />
 
-@code {
-    List<CartProductResponse> cartProducts = null;
-    string message = "Loading cart...";
-    bool isAuthenticated = false;
+    <div class="row">
+        <div class="col">
+            <span>Payment Mode</span>
+        </div>
+        <div class="col">
+            <span class="me-1">Cash on</span>
 
-    protected override async Task OnInitializedAsync()
-    {
-        isAuthenticated = await AuthService.IsUserAuthenticated();
-        await LoadCart();
-    }
+            <select @bind="_orderType">
+                @foreach (var orderT in Enum.GetValues(typeof(OrderType)))
+                {
+                    <option value="@orderT">@orderT</option>
+                }
+            </select>
 
-    private async Task RemoveProductFromCart(int productId, int productTypeId)
-    {
-        await CartService.RemoveProductFromCart(productId, productTypeId);
-        await LoadCart();
-    }
-
-    private async Task LoadCart()
-    {
-        await CartService.GetCartItemsCount();
-
-        cartProducts = await CartService.GetCartProducts();
-
-        if (cartProducts == null || cartProducts.Count == 0)
-        {
-            message = "Your cart is empty.";
-        }
-    }
-
-    private async Task UpdateQuantity(ChangeEventArgs e, CartProductResponse product)
-    {
-        product.Quantity = int.Parse(e.Value.ToString());
-
-        if (product.Quantity < 1)
-        {
-            product.Quantity = 1;
-        }
-
-        await CartService.UpdateQuantity(product);
-    }
-
-    private async Task PlaceOrder()
-    {
-        string url = await OrderService.PlaceOrder();
-        NavigationManager.NavigateTo(url);
-    }
+            @if (_orderType.Equals(OrderType.Levering))
+            {
+                <span class="ms-1">Allen in Geraardsbergen en omgeving</span>
+            }
+        </div>
+        <div class="col">
+            <button @onclick="PlaceOrder" class="btn btn-success float-end mt-1" disabled="@(_isAuthenticated && !_isAddress)">Checkout</button>
+        </div>
+    </div>
 }

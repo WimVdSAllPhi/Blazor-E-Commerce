@@ -8,6 +8,8 @@
         // Properties
         List<Product> Products { get; set; }
 
+        List<Product> FeaturedProducts { get; set; }
+
         List<Product> AdminProducts { get; set; }
 
         string Message { get; set; }

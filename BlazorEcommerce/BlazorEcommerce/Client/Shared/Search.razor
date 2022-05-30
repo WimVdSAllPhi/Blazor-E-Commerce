@@ -1,7 +1,7 @@
 ﻿@inject NavigationManager NavigationManager
 @inject IProductService ProductService
 
-<div class="input-group">
+<div class="input-group" style="max-width: 235px;">
     <input @bind-value="searchText"
            @bind-value:event="oninput"
            type="search"
@@ -38,15 +38,15 @@
 
     public void SearchProducts()
     {
-        NavigationManager.NavigateTo($"search/{searchText}/1");
-        //if (string.IsNullOrWhiteSpace(searchText))
-        //{
-        //    NavigationManager.NavigateTo("");
-        //}
-        //else
-        //{
-        //    NavigationManager.NavigateTo($"search/{searchText}/1");
-        //}
+        //NavigationManager.NavigateTo($"search/{searchText}/1");
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            NavigationManager.NavigateTo("");
+        }
+        else
+        {
+            NavigationManager.NavigateTo($"search/{searchText}/1");
+        }
     }
 
     public async Task HandleSearch(KeyboardEventArgs args)

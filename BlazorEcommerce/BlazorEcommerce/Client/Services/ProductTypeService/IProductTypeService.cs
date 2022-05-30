@@ -12,6 +12,8 @@
 
         Task UpdateProductType(ProductType productType);
 
+        Task DeleteProductType(int productTypeId);
+
         ProductType CreateNewProductType();
     }
 }

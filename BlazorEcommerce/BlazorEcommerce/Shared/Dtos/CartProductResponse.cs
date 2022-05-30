@@ -8,7 +8,7 @@
         public int ProductTypeId { get; set; }
         public string ProductTypeName { get; set; } = string.Empty;
 
-        public string ImageUrl { get; set; } = string.Empty;
+        public List<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
 
         public decimal Price { get; set; }
 

@@ -1,0 +1,13 @@
+﻿<div class="alert alert-@Type" role="alert">
+    @if (IsFullBody)
+    {
+        <h4 class="alert-heading">@Title</h4>
+        <p>@Description</p>
+        <hr>
+        <p class="mb-0">@Message</p>
+    }
+    else
+    {
+        @Message
+    }
+</div>

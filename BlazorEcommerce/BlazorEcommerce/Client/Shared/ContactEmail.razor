@@ -1,0 +1,65 @@
+﻿@inject IMailService MailService
+@inject ToastService ToastService
+
+<h3 class="text-primary">ContactEmail</h3>
+
+<EditForm Model="sendMail" OnValidSubmit="SendMail" class="text-start">
+    <DataAnnotationsValidator />
+
+    <div class="form-group row mb-3">
+        <label for="email" class="col-md-3 col-lg-2 col-form-label">Email</label>
+        <div class="col-md-9 col-lg-10">
+            <InputText id="email" @bind-Value="sendMail.ToEmail" class="form-control" />
+        </div>
+    </div>
+
+    <div class="form-group row mb-3">
+        <label for="subject" class="col-md-3 col-lg-2 col-form-label">Subject</label>
+        <div class="col-md-9 col-lg-10">
+            <InputText id="subject" @bind-Value="sendMail.Subject" class="form-control" />
+        </div>
+    </div>
+
+    <div class="form-group row mb-3">
+        <label for="message" class="col-md-3 col-lg-2 col-form-label">Message</label>
+        <div class="col-md-9 col-lg-10">
+            <InputTextArea id="message" @bind-Value="sendMail.HTMLBody" class="form-control" rows="4" />
+        </div>
+    </div>
+
+    <div class="form-group row mb-3">
+        <div class="col-md-9 col-lg-10 offset-md-3 offset-lg-2">
+            <button type="submit" class="btn btn-success">Send</button>
+        </div>
+    </div>
+</EditForm>
+
+@*<button class="btn btn-info" @onclick="@(() => ToastService.ShowToast("I'm an INFO message", ToastLevel.Info))">Info Toast</button>
+    <button class="btn btn-success" @onclick="@(() => ToastService.ShowToast("I'm a SUCCESS message", ToastLevel.Success))">Success Toast</button>
+    <button class="btn btn-warning" @onclick="@(() => ToastService.ShowToast("I'm a WARNING message", ToastLevel.Warning))">Warning Toast</button>
+    <button class="btn btn-danger" @onclick="@(() => ToastService.ShowToast("I'm an ERROR message", ToastLevel.Error))">Error Toast</button>*@
+
+<div class="text-danger">@Message</div>
+
+@code {
+    SendMail sendMail = new SendMail();
+    private string Message { get; set; } = string.Empty;
+
+    private async Task SendMail()
+    {
+        Message = string.Empty;
+
+        // https://myaccount.google.com/lesssecureapps
+        var response = await MailService.SendEmailAsync(sendMail);
+
+        if (response.Success)
+        {
+            ToastService.ShowToast(response.Data, ToastLevel.Success);
+            sendMail = new SendMail();
+        }
+        else
+        {
+            Message = response.Message;
+        }
+    }
+}

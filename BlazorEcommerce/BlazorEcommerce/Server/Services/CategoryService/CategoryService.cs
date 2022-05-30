@@ -46,13 +46,6 @@
             return categories;
         }
 
-        private async Task<Category> GetCategoryById(int id)
-        {
-            var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
-
-            return category;
-        }
-
         public async Task<ServiceResponse<List<Category>>> GetAdminCategoriesAsync()
         {
             var response = new ServiceResponse<List<Category>>();
@@ -99,6 +92,13 @@
             var categories = await GetAdminCategoriesAsync();
 
             return categories;
+        }
+
+        private async Task<Category> GetCategoryById(int id)
+        {
+            var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
+
+            return category;
         }
     }
 }

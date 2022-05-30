@@ -6,12 +6,13 @@
 
         public event Action ProductsChanged;
 
-        public List<Product> Products { get; set; } = new List<Product>();
+        public List<Product> Products { get; set; }
+        public List<Product> FeaturedProducts { get; set; }
         public string Message { get; set; } = "Loading Products...";
         public int CurrentPage { get; set; } = 1;
         public int PageCount { get; set; } = 0;
         public string LastSearchText { get; set; } = string.Empty;
-        public List<Product> AdminProducts { get; set; } = new List<Product>();
+        public List<Product> AdminProducts { get; set; }
 
         public ProductService(HttpClient http)
         {
@@ -20,20 +21,30 @@
 
         public async Task GetProductsAsync(string? categoryUrl = null)
         {
+            FeaturedProducts = null;
+            Products = null;
+
             var result = categoryUrl == null ?
                 await _http.GetFromJsonAsync<ServiceResponse<List<Product>>>("api/Product/featured") :
                 await _http.GetFromJsonAsync<ServiceResponse<List<Product>>>($"api/Product/category/{categoryUrl}");
 
             if (result != null && result.Data != null)
             {
-                Products = result.Data;
+                if (categoryUrl == null)
+                {
+                    FeaturedProducts = result.Data;
+                }
+                else
+                {
+                    Products = result.Data;
+
+                    CurrentPage = 1;
+                    PageCount = 0;
+
+                    if (Products.Count == 0)
+                        Message = "No Products found.";
+                }
             }
-
-            CurrentPage = 1;
-            PageCount = 0;
-
-            if (Products.Count == 0)
-                Message = "No Products found.";
 
             ProductsChanged.Invoke();
         }

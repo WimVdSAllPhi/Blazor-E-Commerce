@@ -1,4 +1,14 @@
-﻿img {
+﻿.table .thead-sticky {
+    position: sticky;
+    top: 6rem;
+    z-index: 1;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+img {
     max-height: 100px;
     max-width: 100px;
 }

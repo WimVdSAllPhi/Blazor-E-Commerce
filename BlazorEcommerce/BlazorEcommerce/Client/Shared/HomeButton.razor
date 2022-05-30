@@ -1,9 +1,19 @@
 ﻿@inject NavigationManager NavigationManager
 
-<button @onclick="GoToHome"
-        class="btn btn-outline-primary home-button">
-    My Shop
-</button>
+<ReziseWindow>
+    <ChildContentSmall>
+        <button @onclick="GoToHome" class="btn btn-transparent me-2 home-button">
+            <i class="fas fa-cocktail"></i>
+            <span>K & A</span>
+        </button>
+    </ChildContentSmall>
+    <ChildContentBig>
+        <button @onclick="GoToHome" class="btn btn-transparent me-2 home-button">
+            <i class="fas fa-cocktail"></i>
+            <span>K & A Dreamdeals</span>
+        </button>
+    </ChildContentBig>
+</ReziseWindow>
 
 @code {
     private void GoToHome()

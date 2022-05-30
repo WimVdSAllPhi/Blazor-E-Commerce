@@ -1,26 +1,20 @@
-﻿@inject AuthenticationStateProvider AuthStateProvider
-@using System.Security.Claims
+﻿@inject IAuthService AuthService
 
-@if (authorized)
+@if (isAdmin)
 {
     <a class="dropdown-item" href="admin/categories">Categories</a>
     <a class="dropdown-item" href="admin/product-types">Product Types</a>
     <a class="dropdown-item" href="admin/products">Products</a>
+    <a class="dropdown-item" href="admin/orders">Orders</a>
+    <a class="dropdown-item" href="admin/ads">Ads</a>
     <hr />
 }
 
 @code {
-    bool authorized = false;
+    bool isAdmin = false;
 
     protected override async Task OnInitializedAsync()
     {
-        var state = await AuthStateProvider.GetAuthenticationStateAsync();
-
-        string role = state.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role).Value;
-
-        if (role.Contains("Admin"))
-        {
-            authorized = true;
-        }
+        isAdmin = await AuthService.IsAdminOrNotAsync();
     }
 }

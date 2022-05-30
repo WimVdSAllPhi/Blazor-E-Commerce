@@ -1,0 +1,64 @@
+﻿@page "/admin/ads"
+
+<PageTitle>K & A Dreamdeals - Ads</PageTitle>
+
+<h3>Ads</h3>
+
+<h4>How it will be showed</h4>
+
+<Ads ShowDelete />
+
+@if (_categoryService != null && _adService != null)
+{
+    <hr />
+
+    @if (_ad != null)
+    {
+        <EditForm Model="_ad" OnValidSubmit="AddAsync">
+            <DataAnnotationsValidator />
+
+            <div class="mb-0">
+                <label for="title">Title</label>
+                <InputText id="title" @bind-Value="_ad.Title" class="form-control"></InputText>
+                <ValidationMessage For="@(() => _ad.Title)" />
+            </div>
+
+            @if (_categoryService.Categories != null)
+            {
+                <div class="mb-0">
+                    <label for="Url">Url</label>
+                    <select class="form-select" @bind="_ad.Url">
+                        <option value="/"></option>
+                        @foreach (var category in _categoryService.Categories)
+                        {
+                            <option value="@category.Url">@category.Name</option>
+                        }
+                    </select>
+                    <ValidationMessage For="@(() => _ad.Url)" />
+                </div>
+            }
+
+            <div class="mb-0">
+                <label for="CssClass">CssClass</label>
+                <InputText id="CssClass" @bind-Value="_ad.CssClass" class="form-control"></InputText>
+                <ValidationMessage For="@(() => _ad.CssClass)" />
+            </div>
+
+            <div class="mb-0">
+                <label for="image">Image Url</label>
+                <ImageUpload IsTop="true" OnImageChange="AssignImageUrl" ImgUrl="@_ad.ImageUrl" NoImageUrl="Images/noImage.jpg" ImageStyle="width: 150px;height: 150px;" />
+                <ValidationMessage For="@(() => _ad.ImageUrl)" />
+            </div>
+
+            <hr />
+
+            <div class="mb-2">
+                <button type="submit" class="btn btn-success float-end">Create Ad</button>
+            </div>
+        </EditForm>
+    }
+}
+else
+{
+    <Alert Type="danger" Message="Problem with the Inject function!!!" />
+}

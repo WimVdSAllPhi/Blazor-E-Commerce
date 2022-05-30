@@ -1,0 +1,54 @@
+﻿.main {
+    position: relative;
+}
+
+.card-wrapper {
+    padding-top: 5rem;
+}
+
+.profile-card {
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    margin: 30px 0;
+    padding: 10px;
+    margin-top: 0;
+    text-align: center;
+}
+
+    .profile-card .profile-name {
+        margin-top: 0;
+    }
+
+    .profile-card .profile-photo {
+        border: 6px solid white;
+        margin-left: -78px;
+        position: absolute;
+        top: 0;
+        width: 162px;
+    }
+
+    .profile-card .profile-note {
+        height: auto;
+        overflow: hidden;
+        position: relative;
+    }
+
+span[data-descr] {
+    position: relative;
+    cursor: pointer;
+}
+
+    span[data-descr]:hover::after {
+        content: attr(data-descr);
+        position: absolute;
+        left: 0;
+        top: 24px;
+        min-width: 200px;
+        border: 1px #aaaaaa solid;
+        border-radius: 10px;
+        background-color: #ffffcc;
+        padding: 12px;
+        color: #000000;
+        font-size: 14px;
+        z-index: 1;
+    }

@@ -8,10 +8,12 @@ namespace BlazorEcommerce.Server.Controllers
     public class PaymentController : ControllerBase
     {
         private readonly IPaymentService _paymentService;
+        private readonly IPaypalService _paypalService;
 
-        public PaymentController(IPaymentService paymentService)
+        public PaymentController(IPaymentService paymentService, IPaypalService paypalService)
         {
             _paymentService = paymentService;
+            _paypalService = paypalService;
         }
 
         [HttpPost("checkout"), Authorize]
@@ -20,6 +22,14 @@ namespace BlazorEcommerce.Server.Controllers
             var session = await _paymentService.CreateCheckoutSession();
 
             var returnUrl = session.Url;
+
+            return Ok(returnUrl);
+        }
+
+        [HttpPost("checkoutPayPal"), Authorize]
+        public async Task<ActionResult<string>> MakePaymentPaypalAsync()
+        {
+            var returnUrl = await _paypalService.MakePaymentPaypalAsync();
 
             return Ok(returnUrl);
         }

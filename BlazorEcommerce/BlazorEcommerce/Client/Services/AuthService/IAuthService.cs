@@ -8,6 +8,12 @@
 
         Task<ServiceResponse<bool>> ChangePassword(UserChangePassword request);
 
+        Task<ServiceResponse<UserProfile>> GetProfileAsync();
+
         Task<bool> IsUserAuthenticated();
+
+        Task<bool> IsAdminOrNotAsync();
+
+        Task<ServiceResponse<UserProfile>> UpdateUser(UserProfile user);
     }
 }

@@ -1,115 +1,92 @@
 ﻿@page "/admin/categories"
 
-@inject ICategoryService CategoryService
-
-@attribute [Authorize(Roles = "Admin")]
-
-@implements IDisposable
+<PageTitle>K & A Dreamdeals - Categories</PageTitle>
 
 <h3>Categories</h3>
 
-<div class="header">
-    <div class="col">Name</div>
-    <div class="col">Url</div>
-    <div class="col">Visible</div>
-    <div class="col"></div>
-</div>
-
-@foreach (var category in CategoryService.AdminCategories)
+@if (_categoryService != null)
 {
-    @if (category.Editing)
-    {
-        <EditForm Model="editingCategory" OnSubmit="UpdateCategory">
-            <div class="row">
-                <div class="col">
-                    <InputText @bind-Value="editingCategory.Name" class="form-control"></InputText>
-                </div>
-                <div class="col">
-                    <InputText @bind-Value="editingCategory.Url" class="form-control"></InputText>
-                </div>
-                <div class="col col-visible">
-                    <InputCheckbox @bind-Value="editingCategory.Visible" style="transform: scale(1.5,1.5);"></InputCheckbox>
-                </div>
-                <div class="col">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="oi oi-cloud-upload"></i>
+    <table class="table table-sm mb-4">
+        <thead class="table-dark thead-sticky">
+            <tr>
+                <th>Name</th>
+                <th>Url</th>
+                <th style="width: 5rem;">Visible</th>
+                <th style="width: 7rem;">
+                    <button class="btn btn-success float-end" @onclick="CreateNewCategory">
+                        <i class="oi oi-plus"></i>
                     </button>
-                    <button class="btn btn-primary" @onclick="CancelEditing">
-                        <i class="oi oi-circle-x"></i>
-                    </button>
-                </div>
-            </div>
-        </EditForm>
-    }
-    else
-    {
-        <div class="row">
-            <div class="col">
-                @category.Name
-            </div>
-            <div class="col">
-                @category.Url
-            </div>
-            <div class="col col-visible">
-                <span>@(category.Visible ? "✔️" : "")</span>
-            </div>
-            <div class="col">
-                <button class="btn btn-primary" @onclick="(() => EditCategory(category))">
-                    <i class="oi oi-pencil"></i>
-                </button>
-                <button class="btn btn-primary" @onclick="(() => DeleteCategory(category.Id))">
-                    <i class="oi oi-trash"></i>
-                </button>
-            </div>
-        </div>
-    }
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (_categoryService.AdminCategories == null)
+            {
+                <tr>
+                    <td colspan="12">
+                        <Loading Style="min-height:calc(100vh - 40rem);" />
+                    </td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var category in _categoryService.AdminCategories)
+                {
+                    <tr>
+                        @if (category.Editing)
+                        {
+                            <td>
+                                <input type="text" id="Name" value="@category.Name" @onchange="@((ChangeEventArgs e) => UpdateCategoryName(e, category))" class="form-control" />
+                            </td>
+                            <td>
+                                <input type="text" id="Url" value="@category.Url" @onchange="@((ChangeEventArgs e) => UpdateCategoryUrl(e, category))" class="form-control" />
+                            </td>
+                            <td class="text-center">
+                                <input type="checkbox" id="scales" name="scales" checked="@category.Visible" @onchange="@((ChangeEventArgs e) => UpdateCategoryVisible(e, category))" />
+                            </td>
+                            <td class="text-end">
+                                <button class="btn @(category.IsNew ? "btn-success" : "btn-warning")" @onclick="(() => UpdateCategory(category))">
+                                    @if (category.IsNew)
+                                    {
+                                        <i class="fas fa-save"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="oi oi-cloud-upload"></i>
+                                    }
+                                </button>
+                                <button class="btn btn-secondary" @onclick="CancelEditing">
+                                    <i class="oi oi-x"></i>
+                                </button>
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                @category.Name
+                            </td>
+                            <td>
+                                @category.Url
+                            </td>
+                            <td class="text-center">
+                                <span>@(category.Visible ? "✔️" : "")</span>
+                            </td>
+                            <td class="text-end">
+                                <button class="btn btn-info" @onclick="(() => EditCategory(category))">
+                                    <i class="oi oi-pencil"></i>
+                                </button>
+                                <button class="btn btn-danger" @onclick="(() => DeleteCategory(category.Id))">
+                                    <i class="oi oi-trash"></i>
+                                </button>
+                            </td>
+                        }
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
 }
-<button class="btn btn-primary" @onclick="CreateNewCategory">
-    <i class="oi oi-plus"></i> Add new category
-</button>
-
-@code {
-    Category editingCategory = null;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await CategoryService.GetAdminCategories();
-        CategoryService.OnChange += StateHasChanged;
-    }
-
-    public void Dispose()
-    {
-        CategoryService.OnChange -= StateHasChanged;
-    }
-
-    private void CreateNewCategory()
-    {
-        editingCategory = CategoryService.CreateNewCategory();
-    }
-
-    private void EditCategory(Category category)
-    {
-        category.Editing = true;
-        editingCategory = category;
-    }
-
-    private async Task UpdateCategory()
-    {
-        if (editingCategory.IsNew)
-            await CategoryService.AddCategory(editingCategory);
-        else
-            await CategoryService.UpdateCategory(editingCategory);
-        editingCategory = new Category();
-    }
-
-    private async Task CancelEditing()
-    {
-        editingCategory = new Category();
-        await CategoryService.GetAdminCategories();
-    }
-
-    private async Task DeleteCategory(int id)
-    {
-        await CategoryService.DeleteCategory(id);
-    }
+else
+{
+    <Alert Type="danger" Message="Problem with the Inject function!!!" />
 }

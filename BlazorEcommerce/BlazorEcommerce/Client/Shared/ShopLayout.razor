@@ -1,20 +1,94 @@
-﻿@inherits LayoutComponentBase
+﻿@inject IAuthService AuthService
+@inject IJSRuntime JS
+@inject BrowserService Browser
 
-<div class="page">
-    <main>
-        <div class="top-row px-2">
-            <HomeButton />
-            <Search />
-            <UserButton />
-            <CartCounter />
+@inherits LayoutComponentBase
+
+<ToastBase />
+
+<div id="page-container">
+    <div id="content-wrap">
+        <div class="page @AdminCssClass">
+            <main>
+                <ReziseWindow>
+                    <ChildContentSmall>
+                        <!-- Small -->
+                        <div class="sticky-top bs-body">
+                            <!-- Top Nav -->
+                            <div class="w-100 bg-primary-gradiant">
+                                <div class="container-sm">
+                                    <div class="d-flex flex-row justify-content-between">
+                                        <div class="d-flex flex-row align-items-center">
+                                            <HomeButton />
+                                        </div>   
+                                        <div class="d-flex flex-row align-items-center">
+                                            <UserButton />
+                                            <CartCounter />
+                                        </div>
+                                    </div>     
+                                </div> 
+                            </div>
+
+                            <!-- Nav -->
+                            <div class="bg-primary-gradiant-light">
+                                <div class="container-sm">
+                                    <ShopNavMenu>
+                                        <Search />
+                                    </ShopNavMenu>
+                                </div>
+                            </div>
+                        </div>
+                    </ChildContentSmall>
+                    <ChildContentBig>
+                        <!-- Big -->
+                        <div class="sticky-top bs-body">
+                            <!-- Top Nav -->
+                            <div class="w-100 bg-primary-gradiant">
+                                <div class="container-md">
+                                    <div class="d-flex flex-row justify-content-between">
+                                        <div class="d-flex flex-row align-items-center">
+                                            <HomeButton />
+                                        </div>
+                                        <div class="d-flex flex-row align-items-center">
+                                            <Search />
+                                            <UserButton />
+                                            <CartCounter />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Nav -->
+                            <div class="bg-primary-gradiant-light">
+                                <div class="container-md">
+                                    <ShopNavMenu />
+                                </div>
+                            </div>
+                        </div>
+                    </ChildContentBig>
+                </ReziseWindow>
+                <div class="container-sm">
+                    <article class="content px-2">
+                        @Body
+                    </article>
+                </div>
+            </main>
         </div>
-
-        <div class="nav-menu">
-            <ShopNavMenu />
-        </div>
-
-        <article class="content px-2">
-            @Body
-        </article>
-    </main>
+    </div>
+    <Footer id="footer" />
 </div>
+
+@code {
+    bool isAdmin = false;
+
+    private string AdminCssClass => isAdmin ? "admin" : null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Init Browser service with Javascript runtime
+
+        Browser.Init(JS);
+
+        isAdmin = await AuthService.IsAdminOrNotAsync();
+    }
+}

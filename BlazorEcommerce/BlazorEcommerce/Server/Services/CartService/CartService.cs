@@ -62,7 +62,7 @@
 
             foreach (var cartItem in cartItems)
             {
-                var product = await _context.Products.Where(x => x.Id == cartItem.ProductId).FirstOrDefaultAsync();
+                var product = await _context.Products.Where(x => x.Id == cartItem.ProductId).Include(x => x.ProductImages).FirstOrDefaultAsync();
 
                 if (product == null)
                 {
@@ -83,7 +83,7 @@
                 {
                     ProductId = product.Id,
                     Title = product.Title,
-                    ImageUrl = product.ImageUrl,
+                    ProductImages = product.ProductImages,
                     Price = productVariant.Price,
                     ProductTypeId = productVariant.ProductTypeId,
                     ProductTypeName = productVariant.ProductType.Name,

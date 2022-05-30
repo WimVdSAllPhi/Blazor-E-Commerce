@@ -1,0 +1,54 @@
+﻿﻿.container {
+    padding: 6px;
+    border: 1px solid;
+    border-color: lightgray;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.container-error {
+    border: 1px solid;
+    border-color: red;
+}
+
+    .container-error .accordion-button {
+        background-color: #f5d3d3;
+    }
+
+.container-valid {
+    border: 1px solid;
+    border-color: green;
+}
+
+    .container-valid .accordion-button {
+        background-color: #e1ffe1;
+    }
+
+.image {
+    max-width: 200px;
+    max-height: 200px;
+    min-width: 200px;
+    min-height: 200px;
+}
+
+.order-price {
+    font-weight: 600;
+    font-size: 1.2em;
+    vertical-align: middle;
+}
+
+.hoverAccordion {
+    position: relative;
+}
+
+    .hoverAccordion .printBtn {
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 3;
+        display: none;
+    }
+
+    .hoverAccordion:hover .printBtn {
+        display: block;
+    }

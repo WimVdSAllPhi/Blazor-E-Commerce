@@ -1,5 +1,5 @@
 ﻿.home-button {
     white-space: nowrap;
-    margin-right: 10px;
-    transform: rotate(-5deg);
+    font-size: 1.5rem;
+    font-weight: 300;
 }

@@ -38,15 +38,15 @@ namespace BlazorEcommerce.Server.Services.PaymentService
                     ProductData = new SessionLineItemPriceDataProductDataOptions()
                     {
                         Name = product.Title,
-                        Images = new List<string>() {
-                              product.ImageUrl,
-                          },
+                        Images = product.ProductImages.Select(x => x.ImageUrl).ToList(),
                     },
                 },
                 Quantity = product.Quantity,
             }));
 
             var email = _authService.GetUserEmail();
+
+            var domain = "https://localhost:7139";
 
             var options = new SessionCreateOptions()
             {
@@ -65,8 +65,8 @@ namespace BlazorEcommerce.Server.Services.PaymentService
                 },
                 LineItems = lineItems,
                 Mode = "payment",
-                SuccessUrl = "https://localhost:7139/order-success",
-                CancelUrl = "https://localhost:7139/cart"
+                SuccessUrl = $"{domain}/order-success",
+                CancelUrl = $"{domain}/cart"
             };
 
             var service = new SessionService();
@@ -89,7 +89,7 @@ namespace BlazorEcommerce.Server.Services.PaymentService
 
                     var user = await _authService.GetUserByEmail(session.CustomerEmail);
 
-                    await _orderService.PlaceOrder(user.Id);
+                    await _orderService.PlaceOrder(user.Id, OrderType.Levering);
                 }
 
                 return new ServiceResponse<bool>() { Data = true };

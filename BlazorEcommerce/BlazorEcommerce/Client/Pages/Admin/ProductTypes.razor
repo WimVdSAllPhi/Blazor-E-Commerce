@@ -1,77 +1,71 @@
 ﻿@page "/admin/product-types"
-@inject IProductTypeService ProductTypeService
-@implements IDisposable
-@attribute [Authorize(Roles = "Admin")]
+
+<PageTitle>K & A Dreamdeals - Product Types</PageTitle>
 
 <h3>Product Types</h3>
 
-@foreach (var productType in ProductTypeService.ProductTypes)
-{
-    @if (productType.Editing)
-    {
-        <EditForm Model="editingProductType" OnSubmit="UpdateProductType">
-            <div class="row">
-                <div class="col">
-                    <InputText @bind-Value="editingProductType.Name" class="form-control"></InputText>
-                </div>
-                <div class="col">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="oi oi-cloud-upload"></i>
-                    </button>
-                </div>
-            </div>
-        </EditForm>
-    }
-    else
-    {
-        <div class="row">
-            <div class="col">
-                @productType.Name
-            </div>
-            <div class="col">
-                <button class="btn btn-primary" @onclick="@(() => EditProductType(productType))">
-                    <i class="oi oi-pencil"></i>
+<table class="table table-sm mb-4">
+    <thead class="table-dark thead-sticky">
+        <tr>
+            <th>Name</th>
+            <th style="width: 7rem;">
+                <button class="btn btn-success float-end" @onclick="CreateNewProductType">
+                    <i class="oi oi-plus"></i>
                 </button>
-            </div>
-        </div>
-    }
-}
-<button class="btn btn-primary" @onclick="CreateNewProductType">
-    <i class="oi oi-plus"></i> Add new product type
-</button>
-
-@code {
-    ProductType editingProductType = null;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await ProductTypeService.GetProductTypes();
-        ProductTypeService.OnChange += StateHasChanged;
-    }
-
-    public void Dispose()
-    {
-        ProductTypeService.OnChange -= StateHasChanged;
-    }
-
-    private void EditProductType(ProductType productType)
-    {
-        productType.Editing = true;
-        editingProductType = productType;
-    }
-
-    private void CreateNewProductType()
-    {
-        editingProductType = ProductTypeService.CreateNewProductType();
-    }
-
-    private async Task UpdateProductType()
-    {
-        if (editingProductType.IsNew)
-            await ProductTypeService.AddProductType(editingProductType);
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (_productTypeService.ProductTypes == null)
+        {
+            <tr>
+                <td colspan="12">
+                    <Loading Style="min-height:calc(100vh - 40rem);" />
+                </td>
+            </tr>
+        }
         else
-            await ProductTypeService.UpdateProductType(editingProductType);
-
-        editingProductType = new ProductType();
-    }
-}
+        {
+            @foreach (var productType in _productTypeService.ProductTypes)
+            {
+                <tr>
+                    @if (productType.Editing)
+                    {
+                        <td>
+                            <input type="text" id="Name" value="@productType.Name" @onchange="@((ChangeEventArgs e) => UpdateProductTypeName(e, productType))" class="form-control" />
+                        </td>
+                        <td class="text-end">
+                            <button class="btn @(productType.IsNew ? "btn-success" : "btn-warning")" @onclick="(() => UpdateProductType(productType))">
+                                @if (productType.IsNew)
+                                {
+                                    <i class="fas fa-save"></i>
+                                }
+                                else
+                                {
+                                    <i class="oi oi-cloud-upload"></i>
+                                }
+                            </button>
+                            <button class="btn btn-secondary" @onclick="CancelEditing">
+                                <i class="oi oi-x"></i>
+                            </button>
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            @productType.Name
+                        </td>
+                        <td class="text-end">
+                            <button class="btn btn-info" @onclick="(() => EditProductType(productType))">
+                                <i class="oi oi-pencil"></i>
+                            </button>
+                            <button class="btn btn-danger" @onclick="(() => DeleteProductType(productType.Id))">
+                                <i class="oi oi-trash"></i>
+                            </button>
+                        </td>
+                    }
+                </tr>
+            }
+        }
+    </tbody>
+</table>

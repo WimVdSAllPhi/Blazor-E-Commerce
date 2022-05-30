@@ -1,10 +1,13 @@
 global using BlazorEcommerce.Server.Data;
 global using BlazorEcommerce.Server.Services.AddressService;
+global using BlazorEcommerce.Server.Services.AdService;
 global using BlazorEcommerce.Server.Services.AuthService;
 global using BlazorEcommerce.Server.Services.CartService;
 global using BlazorEcommerce.Server.Services.CategoryService;
+global using BlazorEcommerce.Server.Services.MailService;
 global using BlazorEcommerce.Server.Services.OrderService;
 global using BlazorEcommerce.Server.Services.PaymentService;
+global using BlazorEcommerce.Server.Services.PaypalService;
 global using BlazorEcommerce.Server.Services.ProductService;
 global using BlazorEcommerce.Server.Services.ProductTypeService;
 global using BlazorEcommerce.Shared;
@@ -38,6 +41,9 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<IProductTypeService, ProductTypeService>();
+builder.Services.AddScoped<IPaypalService, PaypalService>();
+builder.Services.AddScoped<IMailService, MailService>();
+builder.Services.AddScoped<IAdService, AdService>();
 
 // Authentication
 var appSettingsToken = builder.Configuration.GetSection("AppSettings:Token").Value;
@@ -52,6 +58,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = false,
         };
     });
+
+// Mailling
+var mailSettings = builder.Configuration.GetSection("SendMailSettings").Get<SendMailSettings>();
+builder.Services.AddSingleton(mailSettings);
 
 // DI Http Context
 builder.Services.AddHttpContextAccessor();

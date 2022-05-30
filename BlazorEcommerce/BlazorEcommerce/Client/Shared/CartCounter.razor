@@ -1,11 +1,12 @@
 ﻿@inject ICartService CartService
     @inject ISyncLocalStorageService LocalStorage
+    @inject NavigationManager NavigationManager
     @implements IDisposable
 
-<a href="cart" class="btn btn-info">
+<button @onclick="GoToCart" class="btn btn-info text-nowrap ms-2">
     <i class="oi oi-cart"></i>
     <span class="badge">@GetCartItemsCount()</span>
-</a>
+</button>
 
 @code {
     private int GetCartItemsCount()
@@ -22,5 +23,10 @@
     public void Dispose()
     {
         CartService.OnChange -= StateHasChanged;
+    }
+
+    private void GoToCart()
+    {
+        NavigationManager.NavigateTo("cart");
     }
 }

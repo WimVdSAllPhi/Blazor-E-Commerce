@@ -5,7 +5,7 @@
         public int ProductId { get; set; }
         public string Title { get; set; }
         public string ProductTypeName { get; set; }
-        public string ImageUrl { get; set; }
+        public List<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
         public int Quantity { get; set; }
         public decimal TotalPrice { get; set; }
     }

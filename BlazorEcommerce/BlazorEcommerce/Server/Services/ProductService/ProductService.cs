@@ -19,6 +19,7 @@
 
             var products = await _context.Products
                 .Where(x => !x.Deleted)
+                .Include(x => x.ProductImages)
                 .Include(x => x.Variants.Where(x => !x.Deleted))
                 .ThenInclude(x => x.ProductType)
                 .ToListAsync();
@@ -30,6 +31,14 @@
 
         public async Task<ServiceResponse<Product>> CreateProductAsync(Product product)
         {
+            if (product != null && product.ProductImages != null && product.ProductImages.Count > 0)
+            {
+                product.ProductImages.ForEach(x => x.ProductId = product.Id);
+                product.ProductImages.ForEach(x => x.Product = null);
+
+                _context.ProductImage.AddRange(product.ProductImages);
+            }
+
             foreach (var variant in product.Variants)
             {
                 variant.ProductType = null;
@@ -62,9 +71,22 @@
                 return errorResponse;
             }
 
+            if (product != null && product.ProductImages != null && product.ProductImages.Count > 0)
+            {
+                var dbProductImages = await _context.ProductImage.Where(x => x.ProductId == product.Id).ToListAsync();
+
+                _context.ProductImage.RemoveRange(dbProductImages);
+
+                foreach (var productImage in product.ProductImages)
+                {
+                    productImage.ProductId = product.Id;
+
+                    _context.ProductImage.Add(productImage);
+                }
+            }
+
             dbProduct.Title = product.Title;
             dbProduct.Description = product.Description;
-            dbProduct.ImageUrl = product.ImageUrl;
             dbProduct.CategoryId = product.CategoryId;
             dbProduct.Visible = product.Visible;
             dbProduct.Featured = product.Featured;
@@ -87,6 +109,7 @@
                     dbVariant.OriginalPrice = variant.OriginalPrice;
                     dbVariant.Visible = variant.Visible;
                     dbVariant.Deleted = variant.Deleted;
+                    dbVariant.Stock = variant.Stock;
                 }
             }
 
@@ -136,6 +159,7 @@
 
             var products = await _context.Products
                 .Where(x => x.Visible && !x.Deleted)
+                .Include(x => x.ProductImages)
                 .Include(x => x.Variants.Where(x => x.Visible && !x.Deleted))
                 .ToListAsync();
 
@@ -150,7 +174,8 @@
 
             var products = await _context.Products
                 .Where(x => x.Featured && x.Visible && !x.Deleted)
-                .Include(x => x.Variants.Where(x => x.Visible && !x.Deleted))
+                .Include(x => x.ProductImages)
+                .Include(x => x.Variants.Where(x => x.Visible && !x.Deleted && x.Stock > 0))
                 .ToListAsync();
 
             response.Data = products;
@@ -167,6 +192,7 @@
             if (_httpContextAccessor.HttpContext.User.IsInRole("Admin"))
             {
                 product = await _context.Products
+                    .Include(x => x.ProductImages)
                     .Include(x => x.Variants.Where(x => !x.Deleted))
                     .ThenInclude(x => x.ProductType)
                     .FirstOrDefaultAsync(x => x.Id == id && !x.Deleted);
@@ -174,6 +200,7 @@
             else
             {
                 product = await _context.Products
+                    .Include(x => x.ProductImages)
                     .Include(x => x.Variants.Where(x => x.Visible && !x.Deleted))
                     .ThenInclude(x => x.ProductType)
                     .FirstOrDefaultAsync(x => x.Id == id && !x.Deleted && x.Visible);
@@ -198,6 +225,7 @@
 
             var products = await _context.Products
                 .Where(x => x.Category.Url.ToLower().Equals(categoryUrl.ToLower()) && x.Visible && !x.Deleted)
+                .Include(x => x.ProductImages)
                 .Include(x => x.Variants.Where(x => x.Visible && !x.Deleted))
                 .ToListAsync();
 
@@ -246,7 +274,7 @@
         {
             List<Product> products = await FindProductsBySearchTextAsync(searchText);
 
-            var pageResults = 2f;
+            var pageResults = 12f;
             var pageCount = Math.Ceiling(products.Count / pageResults);
 
             var productsPaged = await _context.Products
@@ -254,6 +282,7 @@
                     ||
                     x.Description.ToLower().Contains(searchText.ToLower())
                     && x.Visible && !x.Deleted)
+                .Include(x => x.ProductImages)
                 .Include(x => x.Variants.Where(x => x.Visible && !x.Deleted))
                 .Skip((page - 1) * (int)pageResults)
                 .Take((int)pageResults)
@@ -279,6 +308,7 @@
                     ||
                     x.Description.ToLower().Contains(searchText.ToLower())
                     && x.Visible && !x.Deleted)
+                .Include(x => x.ProductImages)
                 .Include(x => x.Variants.Where(x => x.Visible && !x.Deleted))
                 .ToListAsync();
         }

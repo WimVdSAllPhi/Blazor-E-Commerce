@@ -1,11 +1,17 @@
 ﻿@inject ICategoryService CategoryService
 @implements IDisposable
 
-<div class="top-row ps-3 navbar navbar-dark navbar-toggler-wrapper">
-    <div class="container-fluid">
+<div class="navbar navbar-dark navbar-toggler-wrapper p-0 pb-2">
+    <div class="container-fluid pe-0">
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
+        @if (ChildContent != null)
+        {
+            <div class="d-flex flex-row align-items-end">
+                @ChildContent
+            </div>
+        }
     </div>
 </div>
 
@@ -32,6 +38,9 @@
     private bool collapseNavMenu = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
 
     private void ToggleNavMenu()
     {

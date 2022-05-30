@@ -75,6 +75,34 @@ namespace BlazorEcommerce.Server.Services.AuthService
             return response;
         }
 
+        public async Task<ServiceResponse<int>> RemoveUser(User user)
+        {
+            var isUser = await UserExists(user.Email);
+
+            if (!isUser)
+            {
+                var errorResponse = new ServiceResponse<int>()
+                {
+                    Success = false,
+                    Message = "User doesn't exist."
+                };
+
+                return errorResponse;
+            }
+
+            _context.Users.Remove(user);
+
+            await _context.SaveChangesAsync();
+
+            var response = new ServiceResponse<int>()
+            {
+                Data = user.Id,
+                Message = "Deleted successful!"
+            };
+
+            return response;
+        }
+
         public async Task<bool> UserExists(string email)
         {
             var isUser = await _context.Users.AnyAsync(u => u.Email.ToLower().Equals(email.ToLower()));
@@ -113,6 +141,7 @@ namespace BlazorEcommerce.Server.Services.AuthService
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Email),
                 new Claim(ClaimTypes.Role, user.Role),
+                new Claim(ClaimTypes.GivenName, $"{user.FirstName} {user.LastName}"),
             };
 
             var appSettingsToken = _configuration.GetSection("AppSettings:Token");
@@ -159,7 +188,27 @@ namespace BlazorEcommerce.Server.Services.AuthService
             return respone;
         }
 
-        public int GetUserId() => int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+        public int GetUserId()
+        {
+            var context = _httpContextAccessor.HttpContext;
+
+            if (context != null)
+            {
+                var user = context.User;
+
+                if (user != null)
+                {
+                    var claim = user.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                    if (int.TryParse(claim, out var id))
+                    {
+                        return id;
+                    }
+                }
+            }
+
+            return 0;
+        }
 
         public string GetUserEmail() => _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
 
@@ -168,6 +217,66 @@ namespace BlazorEcommerce.Server.Services.AuthService
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Email.Equals(email));
 
             return user;
+        }
+
+        public async Task<ServiceResponse<UserProfile>> GetFullUserByIdAsync(int id)
+        {
+            var response = new ServiceResponse<UserProfile>();
+
+            var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (dbUser == null)
+            {
+                response.Success = false;
+                response.Message = "User not found.";
+            }
+            else
+            {
+                var userProfile = new UserProfile()
+                {
+                    Id = id,
+                    Email = dbUser.Email,
+                    FirstName = dbUser.FirstName,
+                    LastName = dbUser.LastName,
+                    PhoneNumber = dbUser.PhoneNumber,
+                    ImageUrl = dbUser.ImageUrl,
+                };
+
+                response.Data = userProfile;
+            }
+
+            return response;
+        }
+
+        public async Task<ServiceResponse<UserProfile>> UpdateUserAsync(UserProfile user)
+        {
+            var dbUser = await _context.Users.FindAsync(user.Id);
+
+            if (dbUser == null)
+            {
+                var errorResponse = new ServiceResponse<UserProfile>
+                {
+                    Success = false,
+                    Message = "User not found."
+                };
+
+                return errorResponse;
+            }
+
+            dbUser.ImageUrl = user.ImageUrl;
+            dbUser.Email = user.Email;
+            dbUser.LastName = user.LastName;
+            dbUser.FirstName = user.FirstName;
+            dbUser.PhoneNumber = user.PhoneNumber;
+
+            await _context.SaveChangesAsync();
+
+            var response = new ServiceResponse<UserProfile>
+            {
+                Data = user
+            };
+
+            return response;
         }
     }
 }

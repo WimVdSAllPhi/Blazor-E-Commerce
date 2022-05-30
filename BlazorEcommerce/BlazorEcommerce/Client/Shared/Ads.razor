@@ -1,0 +1,54 @@
+﻿@inject IAdService AdService
+@inject IAuthService AuthService
+
+@implements IDisposable
+
+@if (AdService.Ads != null)
+{
+    <div class="grid-wrapper">
+        @foreach (var ad in AdService.Ads)
+        {
+            <div class="mainBlock-float @ad.CssClass">
+                <a href="@ad.Url" title="@ad.Title">
+                    <img src="@ad.ImageUrl" alt="@ad.Title" title="@ad.Title" />
+                </a>
+                @if (isAdmin && ShowDelete)
+                {
+                    <div class="mainBlock-float-top-end">
+                        <button type="button" class="btn btn-danger" @onclick:stopPropagation="true" @onclick:preventDefault="true" @onclick="@(() => DeleteAdAsync(ad))">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+}
+
+@code {
+    [Parameter]
+    public bool ShowDelete { get; set; } = false;
+
+    private bool isAdmin = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        AdService.AdsChanged += StateHasChanged;
+
+        await AdService.GetAdsAsync();
+
+        isAdmin = await AuthService.IsAdminOrNotAsync();
+    }
+
+    public void Dispose()
+    {
+        AdService.AdsChanged -= StateHasChanged;
+    }
+
+    private async Task DeleteAdAsync(Ad ad)
+    {
+        await AdService.DeleteAdAsync(ad);
+
+        await AdService.GetAdsAsync();
+    }
+}

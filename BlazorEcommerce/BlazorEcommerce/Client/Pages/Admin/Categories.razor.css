@@ -1,21 +1,9 @@
-﻿.header {
-    display: flex;
-    font-weight: 600;
-    text-align: center;
-    border-bottom: 1px solid lightgray;
-    margin-bottom: 6px;
-    padding-bottom: 6px;
+﻿.table .thead-sticky {
+    position: sticky;
+    top: 7.5rem;
+    z-index: 1;
 }
 
-.row {
-    display: flex;
-    padding: 6px;
-}
-
-.col {
-    flex: 1;
-}
-
-.col-visible {
-    text-align: center;
+.table td {
+    vertical-align: middle;
 }

@@ -2,39 +2,31 @@
 @page "/search/{searchText}/{page:int}"
 @page "/{categoryUrl}"
 
-@inject IProductService ProductService
+<PageTitle>K & A Dreamdeals</PageTitle>
 
-<PageTitle>My Shop</PageTitle>
-
-@if (SearchText == null && CategoryUrl == null)
+@if (_productService != null)
 {
-    <FeaturedProducts />
-}
-else
-{
-    <ProductList />
-}
-
-@code {
-    [Parameter]
-    public string? CategoryUrl { get; set; } = null;
-
-    [Parameter]
-    public string? SearchText { get; set; } = null;
-
-    [Parameter]
-    public int Page { get; set; } = 1;
-
-    protected override async Task OnParametersSetAsync()
-    {
-        if (SearchText != null)
+    <div class="mb-10">
+        @if (SearchText == null && CategoryUrl == null)
         {
-            await ProductService.SearchProductsAsync(SearchText, Page);
+            <Ads />
+
+            <div>
+                <div class="text-center mb-2">
+                    <h2 class="mb-0">Treanding Products</h2>
+                </div>
+
+                <FeaturedProducts />
+            </div>
         }
         else
         {
-            await ProductService.GetProductsAsync(CategoryUrl);
-        }
 
-    }
+            <ProductList CategoryUrl="@CategoryUrl" />
+        }
+    </div>
+}
+else
+{
+    <Alert Type="danger" Message="Problem with the Inject function!!!" />
 }

@@ -1,5 +1,6 @@
 ﻿@page "/orders"
-@inject IOrderService OrderService
+
+<PageTitle>K & A Dreamdeals - My Orders</PageTitle>
 
 <h3>Orders</h3>
 
@@ -15,25 +16,17 @@ else
 {
     foreach (var order in orders)
     {
-        <div class="container">
+        <div class="container @(order.IsDone ? "container-valid" : "container-error")">
             <div class="image-wrapper">
                 <img src="@order.ProductImageUrl" class="image" />
             </div>
             <div class="details">
                 <h4>@order.ProductName</h4>
                 <span>@order.OrderDate</span><br />
-                <a href="orders/@order.Id">Show more...</a>
+                <a href="orders/@order.Id">Show more...</a><br />
+                <span>@Enum.GetName(typeof(OrderType), order.OrderType)</span>
             </div>
             <div class="order-price">€@order.TotalPrice</div>
         </div>
-    }
-}
-
-@code {
-    List<OrderOverviewResponse> orders = null;
-
-    protected override async Task OnInitializedAsync()
-    {
-        orders = await OrderService.GetOrders();
     }
 }
